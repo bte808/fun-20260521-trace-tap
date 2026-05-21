@@ -1,0 +1,18 @@
+{
+  "name": "fun-20260521-trace-tap",
+  "version": "1.0.0",
+  "description": "A small browser game about tracing call paths to find root causes.",
+  "type": "module",
+  "scripts": {
+    "start": "python3 -m http.server 5174",
+    "test": "node test/smoke.test.mjs"
+  },
+  "keywords": [
+    "browser-game",
+    "debugging",
+    "call-graph",
+    "static"
+  ],
+  "author": "batuer",
+  "license": "MIT"
+}

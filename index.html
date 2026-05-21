@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Trace Tap is a small browser game where you follow log clues through a call graph and find the root cause."
+    />
+    <title>Trace Tap</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="topbar" aria-label="Game status">
+        <div>
+          <p class="eyebrow">Trace Tap</p>
+          <h1>Find the failing call path.</h1>
+        </div>
+        <div class="scorebox" aria-live="polite">
+          <span>Score</span>
+          <strong id="score">0</strong>
+        </div>
+      </section>
+
+      <section class="case-panel" aria-label="Current case">
+        <div class="case-copy">
+          <div class="case-meta">
+            <span id="case-step">Case 1 of 3</span>
+            <span id="case-tag">frontend incident</span>
+          </div>
+          <h2 id="case-title">Loading case</h2>
+          <p id="case-brief"></p>
+        </div>
+        <div class="meter" aria-label="Progress">
+          <div id="progress-fill"></div>
+        </div>
+      </section>
+
+      <section class="play-grid">
+        <aside class="log-panel" aria-label="Incident log">
+          <div class="panel-title">
+            <span>Incident log</span>
+            <button id="hint-button" class="ghost-button" type="button">Hint</button>
+          </div>
+          <ol id="log-list" class="log-list"></ol>
+          <div class="hint-box" id="hint-box" aria-live="polite">
+            Click the symptom first, then follow the strongest clue upstream.
+          </div>
+        </aside>
+
+        <section class="graph-card" aria-label="Call graph">
+          <div id="graph" class="graph" role="group" aria-label="Clickable call graph">
+            <svg id="edge-layer" aria-hidden="true" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+            <div id="node-layer"></div>
+          </div>
+        </section>
+
+        <aside class="trace-panel" aria-label="Your trace">
+          <div class="panel-title">
+            <span>Your trace</span>
+            <span id="case-points">300 pts</span>
+          </div>
+          <ol id="trace-list" class="trace-list"></ol>
+          <p id="status-line" class="status-line" aria-live="polite">
+            Select nodes in order, then submit the trace.
+          </p>
+          <div class="controls">
+            <button id="undo-button" type="button">Undo</button>
+            <button id="reset-button" type="button">Reset</button>
+            <button id="submit-button" type="button" class="primary-button">Submit</button>
+          </div>
+          <button id="next-button" type="button" class="next-button" hidden>Next case</button>
+        </aside>
+      </section>
+    </main>
+
+    <script type="module" src="src/app.js"></script>
+  </body>
+</html>
