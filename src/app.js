@@ -7,7 +7,8 @@ const state = {
   hintsUsed: 0,
   failedSubmits: 0,
   score: 0,
-  finished: false
+  finished: false,
+  lastSubmission: null
 };
 
 const els = {
@@ -64,7 +65,11 @@ function render() {
   renderNodes(caseItem);
   renderTrace(caseItem);
 
-  els.submitButton.disabled = solved || state.selected.length === 0 || state.finished;
+  const locked = solved || state.finished;
+  els.hintButton.disabled = locked;
+  els.undoButton.disabled = locked || state.selected.length === 0;
+  els.resetButton.disabled = locked || state.selected.length === 0;
+  els.submitButton.disabled = locked || state.selected.length === 0;
   els.nextButton.hidden = !solved && !state.finished;
   els.nextButton.textContent = state.finished ? "Restart set" : "Next case";
 }
@@ -122,6 +127,10 @@ function renderTrace(caseItem) {
     ...state.selected.map((id, index) => {
       const node = nodeById(caseItem, id);
       const li = document.createElement("li");
+      const wasReviewed = state.lastSubmission?.selected.join("|") === state.selected.join("|");
+      if (wasReviewed) {
+        li.classList.add(index < state.lastSubmission.matchedPrefix ? "trace-step-ok" : "trace-step-break");
+      }
       li.innerHTML = `<span>${index + 1}</span><strong>${node.label}</strong>`;
       return li;
     })
@@ -138,13 +147,19 @@ function selectNode(id) {
     return;
   }
   state.selected.push(id);
+  state.lastSubmission = null;
   const node = nodeById(caseItem, id);
   els.statusLine.textContent = `${node.label} added to the trace.`;
   render();
 }
 
 function undoStep() {
+  const caseItem = currentCase();
+  if (state.completed.has(caseItem.id) || state.finished) {
+    return;
+  }
   const removed = state.selected.pop();
+  state.lastSubmission = null;
   if (removed) {
     els.statusLine.textContent = "Removed the last step.";
   }
@@ -152,9 +167,14 @@ function undoStep() {
 }
 
 function resetCase() {
+  const caseItem = currentCase();
+  if (state.completed.has(caseItem.id) || state.finished) {
+    return;
+  }
   state.selected = [];
   state.hintsUsed = 0;
   state.failedSubmits = 0;
+  state.lastSubmission = null;
   els.hintBox.textContent = "Click the symptom first, then follow the strongest clue upstream.";
   els.statusLine.textContent = "Trace reset. Start from the visible symptom.";
   render();
@@ -181,6 +201,10 @@ function submitTrace() {
 
   if (!result.exact) {
     state.failedSubmits += 1;
+    state.lastSubmission = {
+      matchedPrefix: result.matchedPrefix,
+      selected: [...state.selected]
+    };
     const next = result.missing[0] ? nodeById(caseItem, result.missing[0]).label : "the root cause";
     const extraText = result.extra.length > 0 ? " One selected node is only a side path." : "";
     els.statusLine.textContent = `Not yet. The trace breaks before ${next}.${extraText}`;
@@ -191,6 +215,7 @@ function submitTrace() {
   const earned = scoreCase(state);
   state.score += earned;
   state.completed.add(caseItem.id);
+  state.lastSubmission = null;
   els.hintBox.textContent = `Root cause: ${nodeById(caseItem, result.root).label}. Fix: ${caseItem.fix}`;
   els.statusLine.textContent = `Correct trace. +${earned} points.`;
 
@@ -211,6 +236,7 @@ function nextCase() {
     state.failedSubmits = 0;
     state.score = 0;
     state.finished = false;
+    state.lastSubmission = null;
     els.hintBox.textContent = "Click the symptom first, then follow the strongest clue upstream.";
     els.statusLine.textContent = "New set ready. Start from the visible symptom.";
     render();
@@ -221,6 +247,7 @@ function nextCase() {
   state.selected = [];
   state.hintsUsed = 0;
   state.failedSubmits = 0;
+  state.lastSubmission = null;
   els.hintBox.textContent = "Read the log, then build the shortest trace to the root cause.";
   els.statusLine.textContent = "Next case loaded.";
   render();

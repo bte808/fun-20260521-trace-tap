@@ -352,6 +352,16 @@ button:disabled {
   background: #f7f9fc;
 }
 
+.trace-list li.trace-step-ok {
+  border-color: rgba(15, 118, 110, 0.55);
+  background: #effaf7;
+}
+
+.trace-list li.trace-step-break {
+  border-color: rgba(226, 93, 79, 0.65);
+  background: #fff1ef;
+}
+
 .trace-list li span {
   display: grid;
   width: 28px;

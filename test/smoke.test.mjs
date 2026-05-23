@@ -31,6 +31,10 @@ for (const caseItem of cases) {
   const wrong = evaluateTrace(caseItem, [caseItem.trace[0], "not-a-node"]);
   assert.equal(wrong.exact, false, `${caseItem.id} wrong trace fails`);
   assert.ok(wrong.missing.length > 0, `${caseItem.id} reports missing steps`);
+
+  const brokenPrefix = evaluateTrace(caseItem, [caseItem.trace[0], caseItem.trace[2]]);
+  assert.equal(brokenPrefix.matchedPrefix, 1, `${caseItem.id} reports the first broken step`);
+  assert.equal(brokenPrefix.missing[0], caseItem.trace[1], `${caseItem.id} points to the next needed node`);
 }
 
 assert.equal(scoreCase({ hintsUsed: 0, failedSubmits: 0 }), 300);

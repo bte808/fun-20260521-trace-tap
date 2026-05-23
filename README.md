@@ -20,6 +20,7 @@ No source code, design, text, or assets were copied from those links. This is an
 - Presents each case as logs plus a clickable call graph.
 - Lets you build a trace by clicking nodes in order.
 - Scores each case, with small penalties for hints and wrong submissions.
+- Marks a failed trace so the correct prefix and first break are visible.
 - Reveals the root cause and a compact fix after each solved case.
 - Works as a no-build static site.
 
@@ -55,7 +56,8 @@ http://localhost:5174/
 2. Tap the graph node where the symptom appears.
 3. Keep tapping upstream nodes until you reach the root cause.
 4. Press `Submit`.
-5. Use `Next case` after a correct trace.
+5. If the trace is wrong, keep the green steps and revise from the red break.
+6. Use `Next case` after a correct trace.
 
 ## Validation
 
