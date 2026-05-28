@@ -172,6 +172,7 @@ h2 {
 .ghost-button,
 .controls button,
 .primary-button,
+.utility-button,
 .next-button {
   min-height: 42px;
   padding: 0 14px;
@@ -191,10 +192,17 @@ h2 {
 }
 
 .primary-button,
+.utility-button,
 .next-button {
   background: var(--teal);
   color: white;
   font-weight: 800;
+}
+
+.utility-button {
+  width: 100%;
+  margin-top: 10px;
+  background: var(--blue);
 }
 
 button:not(:disabled):hover {

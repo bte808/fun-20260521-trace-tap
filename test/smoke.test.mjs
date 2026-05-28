@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { access } from "node:fs/promises";
-import { cases, evaluateTrace, scoreCase } from "../src/puzzles.js";
+import { cases, evaluateTrace, keepMatchedPrefix, scoreCase } from "../src/puzzles.js";
 
 await Promise.all([
   access("index.html"),
@@ -35,6 +35,11 @@ for (const caseItem of cases) {
   const brokenPrefix = evaluateTrace(caseItem, [caseItem.trace[0], caseItem.trace[2]]);
   assert.equal(brokenPrefix.matchedPrefix, 1, `${caseItem.id} reports the first broken step`);
   assert.equal(brokenPrefix.missing[0], caseItem.trace[1], `${caseItem.id} points to the next needed node`);
+  assert.deepEqual(
+    keepMatchedPrefix([caseItem.trace[0], caseItem.trace[2], "decoy"], brokenPrefix.matchedPrefix),
+    [caseItem.trace[0]],
+    `${caseItem.id} trims a reviewed failed trace to the confirmed prefix`
+  );
 }
 
 assert.equal(scoreCase({ hintsUsed: 0, failedSubmits: 0 }), 300);

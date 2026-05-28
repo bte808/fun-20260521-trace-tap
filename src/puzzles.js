@@ -240,3 +240,7 @@ export function evaluateTrace(caseItem, selectedIds) {
 export function scoreCase({ hintsUsed, failedSubmits }) {
   return Math.max(90, 300 - hintsUsed * 35 - failedSubmits * 45);
 }
+
+export function keepMatchedPrefix(selectedIds, matchedPrefix) {
+  return selectedIds.slice(0, Math.max(0, Math.min(selectedIds.length, matchedPrefix)));
+}

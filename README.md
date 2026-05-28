@@ -21,6 +21,7 @@ No source code, design, text, or assets were copied from those links. This is an
 - Lets you build a trace by clicking nodes in order.
 - Scores each case, with small penalties for hints and wrong submissions.
 - Marks a failed trace so the correct prefix and first break are visible.
+- Can keep the confirmed-good prefix after a failed trace, so you can continue from the break.
 - Reveals the root cause and a compact fix after each solved case.
 - Works as a no-build static site.
 
@@ -57,7 +58,8 @@ http://localhost:5174/
 3. Keep tapping upstream nodes until you reach the root cause.
 4. Press `Submit`.
 5. If the trace is wrong, keep the green steps and revise from the red break.
-6. Use `Next case` after a correct trace.
+6. Use `Keep good prefix` to trim away the wrong tail after a reviewed failed trace.
+7. Use `Next case` after a correct trace.
 
 ## Validation
 
@@ -67,7 +69,7 @@ node --check src/app.js
 node --check src/puzzles.js
 ```
 
-The browser UI was also checked on desktop and mobile-sized viewports during the 2026-05-21 automation run.
+The browser UI was also checked on desktop and mobile-sized viewports during the 2026-05-21, 2026-05-25, and 2026-05-28 automation runs.
 
 ## Possible extensions
 

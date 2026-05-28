@@ -1,4 +1,4 @@
-import { cases, evaluateTrace, scoreCase } from "./puzzles.js";
+import { cases, evaluateTrace, keepMatchedPrefix, scoreCase } from "./puzzles.js";
 
 const state = {
   caseIndex: 0,
@@ -29,6 +29,7 @@ const els = {
   undoButton: document.querySelector("#undo-button"),
   resetButton: document.querySelector("#reset-button"),
   submitButton: document.querySelector("#submit-button"),
+  repairButton: document.querySelector("#repair-button"),
   nextButton: document.querySelector("#next-button")
 };
 
@@ -70,6 +71,11 @@ function render() {
   els.undoButton.disabled = locked || state.selected.length === 0;
   els.resetButton.disabled = locked || state.selected.length === 0;
   els.submitButton.disabled = locked || state.selected.length === 0;
+  els.repairButton.hidden =
+    locked ||
+    !state.lastSubmission ||
+    state.lastSubmission.matchedPrefix === 0 ||
+    state.lastSubmission.matchedPrefix >= state.selected.length;
   els.nextButton.hidden = !solved && !state.finished;
   els.nextButton.textContent = state.finished ? "Restart set" : "Next case";
 }
@@ -180,6 +186,22 @@ function resetCase() {
   render();
 }
 
+function keepGoodPrefix() {
+  const caseItem = currentCase();
+  if (state.completed.has(caseItem.id) || state.finished || !state.lastSubmission) {
+    return;
+  }
+
+  const keptCount = state.lastSubmission.matchedPrefix;
+  state.selected = keepMatchedPrefix(state.selected, keptCount);
+  state.lastSubmission = null;
+  els.statusLine.textContent =
+    keptCount === 1
+      ? "Kept the first correct step. Continue from there."
+      : `Kept ${keptCount} correct steps. Continue from there.`;
+  render();
+}
+
 function showHint() {
   const caseItem = currentCase();
   if (state.completed.has(caseItem.id) || state.finished) {
@@ -257,6 +279,7 @@ els.hintButton.addEventListener("click", showHint);
 els.undoButton.addEventListener("click", undoStep);
 els.resetButton.addEventListener("click", resetCase);
 els.submitButton.addEventListener("click", submitTrace);
+els.repairButton.addEventListener("click", keepGoodPrefix);
 els.nextButton.addEventListener("click", nextCase);
 
 render();
